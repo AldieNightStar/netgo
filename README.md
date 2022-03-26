@@ -22,7 +22,7 @@ commands.SetInfo("name", "HaxiDenti Server")
 // And call Serve() when needed to start
 // Server functions:
 //   Serve() - starts the server (Run forever)
-//   Stop()  - will stop server
+//   Stop()  - will stop the server
 server := netgo.NewServer(7777, commands).Serve()
 ```
 

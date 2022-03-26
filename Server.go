@@ -58,18 +58,13 @@ func (s *Server) callCommand(name, args string) string {
 func serveConn(s *Server, conn net.Conn) {
 	buf := bufio.NewReadWriter(bufio.NewReader(conn), bufio.NewWriter(conn))
 	for !s.toStop {
-		time.Sleep(time.Millisecond * 5)
+		time.Sleep(time.Millisecond)
 		str, err := buf.ReadString('\n')
 		if err != nil {
 			break
 		}
-		if len(str) < 1 {
-			buf.WriteString("\n")
-			err := buf.Flush()
-			if err != nil {
-				break
-			}
-			continue
+		if strings.HasSuffix(str, "\n") {
+			str = str[0 : len(str)-1]
 		}
 		cmd := ""
 		args := ""

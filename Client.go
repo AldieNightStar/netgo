@@ -24,12 +24,16 @@ func Connect(addr string) (*Client, error) {
 }
 
 func (c *Client) Call(name string, args string) (string, error) {
+	c.conn.SetDeadline(time.Now().Add(5 * time.Second))
 	_, err := c.buf.WriteString(name + " " + args + "\n")
-	c.buf.Flush()
 	if err != nil {
 		return "", err
 	}
-	time.Sleep(5 * time.Millisecond)
+	err = c.buf.Flush()
+	if err != nil {
+		return "", err
+	}
+	time.Sleep(time.Millisecond)
 	resp, err := c.buf.ReadString('\n')
 	if err != nil {
 		return "", err
@@ -38,4 +42,12 @@ func (c *Client) Call(name string, args string) (string, error) {
 		resp = resp[0 : len(resp)-1]
 	}
 	return resp, nil
+}
+
+func (c *Client) CallOrEmpty(name string, args string) string {
+	resp, err := c.Call(name, args)
+	if err != nil {
+		return ""
+	}
+	return resp
 }

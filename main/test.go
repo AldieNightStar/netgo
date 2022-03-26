@@ -9,9 +9,14 @@ import (
 
 func main() {
 	cmds := netgo.NewCommands()
-	cmds.SetInfo("a", "A LETTER")
-	cmds.SetInfo("b", "B LETTER")
-	cmds.SetInfo("c", "C LETTER")
+	mem := "0"
+	cmds.SetCommand("set", func(s string) string {
+		mem = s
+		return s
+	})
+	cmds.SetCommand("get", func(s string) string {
+		return mem
+	})
 	srv := netgo.NewServer(9999, cmds)
 	go func() {
 		time.Sleep(32 * time.Millisecond)
@@ -20,13 +25,18 @@ func main() {
 			fmt.Println(err.Error())
 			return
 		}
-		fmt.Println("Resp: " + call(cl, "a", ""))
-		fmt.Println("Resp: " + call(cl, "b", ""))
-		fmt.Println("Resp: " + call(cl, "c", ""))
+		cl.Call("set", "111")
+		fmt.Println(cl.Call("get", ""))
+		fmt.Println(cl.Call("get", ""))
+		srv.Stop()
+		fmt.Println(cl.Call("get", ""))
+		fmt.Println(cl.Call("get", ""))
+		fmt.Println(cl.Call("get", ""))
 		srv.Stop()
 	}()
 	fmt.Println("Serving")
 	srv.Serve()
+	time.Sleep(6000 * time.Second)
 }
 
 func call(c *netgo.Client, name, args string) string {
