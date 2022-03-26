@@ -3,6 +3,7 @@ package netgo
 import (
 	"bufio"
 	"net"
+	"strings"
 	"time"
 )
 
@@ -32,6 +33,9 @@ func (c *Client) Call(name string, args string) (string, error) {
 	resp, err := c.buf.ReadString('\n')
 	if err != nil {
 		return "", err
+	}
+	if strings.HasSuffix(resp, "\n") {
+		resp = resp[0 : len(resp)-1]
 	}
 	return resp, nil
 }
