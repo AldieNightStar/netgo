@@ -31,13 +31,20 @@ func (s *Server) Serve() error {
 	if err != nil {
 		return err
 	}
-	for {
+	for !s.toStop {
 		conn, err := ls.Accept()
 		if err != nil {
 			continue
 		}
 		go serveConn(s, conn)
+		go func() {
+			for !s.toStop {
+				time.Sleep(time.Second)
+			}
+			ls.Close()
+		}()
 	}
+	return nil
 }
 
 func (s *Server) callCommand(name, args string) string {
@@ -78,5 +85,8 @@ func serveConn(s *Server, conn net.Conn) {
 		response := s.callCommand(cmd, args)
 		buf.WriteString(response + "\n")
 		buf.Flush()
+		if s.toStop {
+			break
+		}
 	}
 }

@@ -15,7 +15,6 @@ func main() {
 	srv := netgo.NewServer(9999, cmds)
 	go func() {
 		time.Sleep(32 * time.Millisecond)
-		fmt.Println("Connection...")
 		cl, err := netgo.Connect("localhost:9999")
 		if err != nil {
 			fmt.Println(err.Error())
