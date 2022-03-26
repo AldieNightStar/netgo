@@ -11,7 +11,7 @@ import "github.com/AldieNightStar/netgo"
 commands := netgo.NewCommands()
 
 // Echo command on the server
-commands.SetCommand(func(req string) string {
+commands.SetCommand("test", func(req string) string {
     return "ECHO: " + req
 })
 
