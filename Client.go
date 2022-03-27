@@ -33,7 +33,6 @@ func (c *Client) Call(name string, args string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	time.Sleep(time.Millisecond)
 	resp, err := c.buf.ReadString('\n')
 	if err != nil {
 		return "", err
@@ -50,4 +49,7 @@ func (c *Client) CallOrEmpty(name string, args string) string {
 		return ""
 	}
 	return resp
+}
+func (c *Client) Disconnect() {
+	c.conn.Close()
 }

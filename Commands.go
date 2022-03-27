@@ -1,6 +1,6 @@
 package netgo
 
-type Command func(string) string
+type Command func(id int, message string) string
 type Commands map[string]Command
 
 func NewCommands() Commands {
@@ -12,7 +12,7 @@ func (c Commands) SetCommand(name string, cmd Command) {
 }
 
 func (c Commands) SetInfo(name, value string) {
-	c[name] = func(s string) string {
+	c[name] = func(id int, s string) string {
 		return value
 	}
 }
